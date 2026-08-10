@@ -12,7 +12,9 @@ def criar_banco():
         autor TEXT NOT NULL,
         status TEXT,
         numero_paginas INTEGER,
-        data_leitura TEXT
+        data_leitura TEXT,
+        formato TEXT,
+        anotacao TEXT
     )
     """)
     conexao.commit()

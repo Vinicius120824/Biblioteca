@@ -150,6 +150,26 @@ def criar_card_livro(frame_lista, livro, acao=None):
         padx=20,
         anchor="w"
     )
+    label_formato = ctk.CTkLabel(
+        master=card_livro,
+        text=f"💻{livro[6]}",
+        font=("times new roman", 12)
+    )
+    label_formato.pack(
+        pady=2,
+        padx=20,
+        anchor="w"
+    )
+    label_anotacao = ctk.CTkLabel(
+        master=card_livro,
+        text=f"📋{livro[7]}",
+        font=("times new roman", 12)
+    )
+    label_anotacao.pack(
+        pady=2,
+        padx=20,
+        anchor="w"
+    )      
     if acao == "editar":
         button_editar = ctk.CTkButton(
         master=card_livro,
@@ -197,10 +217,20 @@ def mostrar_menu():
         font=("times new roman", 14, "bold")
     )
     mensagem.pack(pady=20)
+    frame_formulario = ctk.CTkScrollableFrame(
+        master=frame_conteudo,
+        fg_color="transparent"
+    )
 
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
     for texto, funcao in opcoes:
         botoes = ctk.CTkButton(
-            master=frame_conteudo,
+            master=frame_formulario,
             text=texto,
             command=funcao
         )
@@ -211,30 +241,43 @@ def mostrar_menu():
 
 def mostrar_tela_cadastro():
     limpar_frame(frame_conteudo)
-
-    titulo_cadastro = ctk.CTkLabel(
+    frame_formulario = ctk.CTkScrollableFrame(
         master=frame_conteudo,
+        fg_color="transparent"
+    )
+
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
+    titulo_cadastro = ctk.CTkLabel(
+        master=frame_formulario,
         text="Cadastro de Livro",
         font=("times new roman", 20, "bold")
     )
     titulo_cadastro.pack(pady=20)
-    entry_titulo = criar_campo(frame_conteudo, "Titulo:")
-    entry_autor = criar_campo(frame_conteudo, "Autor:")
-    entry_status = criar_campo_status(frame_conteudo)
-    entry_paginas = criar_campo(frame_conteudo, "Número de Páginas:")
-    entry_data = criar_campo(frame_conteudo, "Data Leitura:")
+
+    entry_titulo = criar_campo(frame_formulario, "Titulo:")
+    entry_autor = criar_campo(frame_formulario, "Autor:")
+    entry_status = criar_campo_selecao(frame_formulario, "Status:", ["Lido","Lendo","Não Lido"])
+    entry_paginas = criar_campo(frame_formulario, "Número de Páginas:")
+    entry_data = criar_campo(frame_formulario, "Data Leitura:")
+    entry_formato = criar_campo_selecao(frame_formulario, "Formato:", ["Físico", "E-book"])
+    entry_anotacao = criar_campo_anotacao(frame_formulario)
 
     button_cadastrar = ctk.CTkButton(
-        master=frame_conteudo,
+        master=frame_formulario,
         text="Cadastrar",
-        command=lambda: clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data)
+        command=lambda: clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao)
         
     )
     button_cadastrar.pack(
         pady=(10, 15),
         padx=20     
     )
-    criar_button_voltar(frame_conteudo)
+    criar_button_voltar(frame_formulario)
 
 def mostrar_tela_listar():
     limpar_frame(frame_conteudo)
@@ -266,12 +309,14 @@ def mostrar_tela_listar():
 
     criar_button_voltar(frame_conteudo)
 
-def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data):
+def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao):
     titulo = entry_titulo.get()
     autor = entry_autor.get()
     status = entry_status.get()
     paginas = entry_paginas.get()
     data = entry_data.get()
+    formato = entry_formato.get()
+    anotacao = entry_anotacao.get("1.0", "end").strip()
 
     if not titulo.strip():
         mostrar_mensagem("❌ Insira um Título!")
@@ -285,7 +330,7 @@ def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, ent
 
     paginas = int(paginas)           
 
-    cadastrar_livro(titulo,autor,status,paginas,data)
+    cadastrar_livro(titulo,autor,status,paginas,data,formato,anotacao)
     
     mostrar_mensagem("✔Livro Cadastrado com Sucesso!")      
     mostrar_tela_cadastro()
@@ -536,34 +581,47 @@ def mostrar_tela_excluir():
 
 def mostrar_formulario_edicao(livro):
     limpar_frame(frame_conteudo)
-
-    titulo_editar = ctk.CTkLabel(
+    frame_formulario = ctk.CTkScrollableFrame(
         master=frame_conteudo,
+        fg_color="transparent"
+    )
+
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
+    titulo_editar = ctk.CTkLabel(
+        master=frame_formulario,
         text="Editar de Livro",
         font=("times new roman", 20, "bold")
     )
     titulo_editar.pack(pady=20)
-    entry_titulo = criar_campo(frame_conteudo, "Titulo:", livro[1])
-    entry_autor = criar_campo(frame_conteudo, "Autor:", livro[2])
-    entry_status = criar_campo_status(frame_conteudo, livro[3])
-    entry_paginas = criar_campo(frame_conteudo, "Número de Páginas:", livro[4])
-    entry_data = criar_campo(frame_conteudo, "Data Leitura:", livro[5])
+    entry_titulo = criar_campo(frame_formulario, "Titulo:", livro[1])
+    entry_autor = criar_campo(frame_formulario, "Autor:", livro[2])
+    entry_status = criar_campo_selecao(frame_formulario, "Status:", ["Lido","Lendo","Não Lido"], livro[3])
+    entry_paginas = criar_campo(frame_formulario, "Número de Páginas:", livro[4])
+    entry_data = criar_campo(frame_formulario, "Data Leitura:", livro[5])
+    entry_formato = criar_campo_selecao(frame_formulario,"Formato:",["Físico", "E-book"],livro[6])
+    entry_anotacao = criar_campo_anotacao(frame_formulario, livro[7])
 
     botao_salvar = ctk.CTkButton(
-    master=frame_conteudo,
+    master=frame_formulario,
     text="Salvar",
     height=20,
-    command=lambda: clicar_editar(livro[0], entry_titulo, entry_autor, entry_status, entry_paginas, entry_data)
-    )
+    command=lambda: clicar_editar(livro[0], entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao))
     botao_salvar.pack(pady=20)
-    button_voltar_editar(frame_conteudo)
+    button_voltar_editar(frame_formulario)
 
-def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_paginas, entry_data):
+def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao):
     titulo = entry_titulo.get()
     autor = entry_autor.get()
     status = entry_status.get()
     paginas = entry_paginas.get()
     data = entry_data.get()
+    formato = entry_formato.get()
+    anotacao = entry_anotacao.get("1.0", "end").strip()
 
     if not titulo.strip():
         mostrar_mensagem("❌Insira um Título!")
@@ -577,7 +635,7 @@ def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_pagin
 
     paginas = int(paginas)            
 
-    editar_livro(id_livro, titulo, autor, status, paginas, data)
+    editar_livro(id_livro, titulo, autor, status, paginas, data, formato, anotacao)
 
     mostrar_mensagem(f"✔Livro {titulo} Editado com Sucesso!")
     
@@ -623,28 +681,49 @@ def criar_campo(master, texto, valor=None):
         entry.insert(0, str(valor))
     return entry
 
-def criar_campo_status(master, valor=None):
+def criar_campo_selecao(master, texto, opcoes, valor=None):
     label = ctk.CTkLabel(
         master=master,
-        text="Status:",
+        text=texto,
         font=("times new roman", 12, "bold")
     )
     label.pack(pady=(15, 5))
 
-    combo_status = ctk.CTkComboBox(
+    campo_selecao = ctk.CTkComboBox(
         master=master,
-        values=["Lido", "Lendo", "Não Lido"]
+        values=opcoes
     )
-    combo_status.pack(
+    campo_selecao.pack(
         fill="x",
         pady=10,
         padx=30
     )
 
     if valor:
-        combo_status.set(valor)
+        campo_selecao.set(valor)
 
-    return combo_status
+    return campo_selecao
+
+def criar_campo_anotacao(master, valor=None):
+    label = ctk.CTkLabel(
+        master=master,
+        text="Anotações:",
+        font=("times new roman", 12, "bold")
+    )
+    label.pack(pady=(15, 5))
+
+    textbox = ctk.CTkTextbox(
+        master=master
+    )
+    textbox.pack(
+        fill="x",
+        pady=10,
+        padx=30
+    )
+
+    if valor is not None:
+        textbox.insert("1.0", valor)
+    return textbox    
 
 botao_entrar = ctk.CTkButton(
     master=frame_menu,

@@ -5,7 +5,7 @@ def conexao_banco():
     cursor = conexao.cursor()
     return conexao, cursor
 
-def cadastrar_livro(titulo,autor,status,numero_paginas,data_leitura):
+def cadastrar_livro(titulo,autor,status,numero_paginas,data_leitura, formato,anotacao):
 
     conexao, cursor = conexao_banco()
 
@@ -15,10 +15,12 @@ def cadastrar_livro(titulo,autor,status,numero_paginas,data_leitura):
         autor,
         status,
         numero_paginas,
-        data_leitura
+        data_leitura,
+        formato,
+        anotacao
     )
-    VALUES(?, ?, ?, ?, ?)
-    """, (titulo, autor, status, numero_paginas, data_leitura))
+    VALUES(?, ?, ?, ?, ?, ?, ?)
+    """, (titulo, autor, status, numero_paginas, data_leitura, formato, anotacao))
 
     conexao.commit()
     
@@ -48,7 +50,7 @@ def buscar_livro_por_titulo(titulo):
     conexao.close()
     return livro
 
-def editar_livro(id_livro, novo_titulo, novo_autor, novo_status, novo_numero_paginas, nova_data_leitura):
+def editar_livro(id_livro, novo_titulo, novo_autor, novo_status, novo_numero_paginas, nova_data_leitura, novo_formato,novo_anotacao):
     conexao, cursor = conexao_banco()
 
     livro = buscar_livro_id(id_livro)
@@ -74,10 +76,12 @@ def editar_livro(id_livro, novo_titulo, novo_autor, novo_status, novo_numero_pag
                 autor = ?,
                 status = ?,
                 numero_paginas = ?,
-                data_leitura = ?
+                data_leitura = ?,
+                formato = ?,
+                anotacao = ?
             WHERE id = ?
 
-        """, (novo_titulo, novo_autor, novo_status, novo_numero_paginas, nova_data_leitura, id_livro))
+        """, (novo_titulo, novo_autor, novo_status, novo_numero_paginas, nova_data_leitura,novo_formato, novo_anotacao, id_livro))
         conexao.commit()
         conexao.close()
         return True

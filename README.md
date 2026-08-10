@@ -34,23 +34,39 @@ O sistema permite o gerenciamento de uma biblioteca pessoal aplicando as operaç
 
 ```bash
 git clone https://github.com/Vinicius120824/Biblioteca.git
+```
 
-2. Acesse a pasta do projeto
-    cd Biblioteca
+### 2. Acesse a pasta do projeto
 
-3. Crie um ambiente virtual
+```bash
+cd Biblioteca
+```
+
+### 3. Crie um ambiente virtual
+
+```bash
 python -m venv .venv
+```
 
-4. Ative o ambiente virtual
+### 4. Ative o ambiente virtual
+
 No PowerShell:
+
+```powershell
 .\.venv\Scripts\Activate.ps1
+```
 
-5. Instale as dependências
+### 5. Instale as dependências
+
+```bash
 pip install -r requirements.txt
+```
 
-6. Execute o projeto
+### 6. Execute o projeto
+
+```bash
 python main.py
-
+```
 
 - id
 - titulo 

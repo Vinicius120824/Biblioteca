@@ -480,7 +480,7 @@ def mostrar_tela_editar():
 
     label_livros = ctk.CTkLabel(
     master=frame_conteudo,
-    text="Meus Livros",
+    text="Editar Livros",
     font=("times new roman", 20, "bold")
 
     )

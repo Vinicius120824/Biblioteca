@@ -28,7 +28,28 @@ O sistema permite o gerenciamento de uma biblioteca pessoal aplicando as operaç
 - **GitHub** — hospedagem e gerenciamento do repositório
 
 
+## ▶️ Como executar o projeto
 
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/Vinicius120824/Biblioteca.git
+
+2. Acesse a pasta do projeto
+    cd Biblioteca
+
+3. Crie um ambiente virtual
+python -m venv .venv
+
+4. Ative o ambiente virtual
+No PowerShell:
+.\.venv\Scripts\Activate.ps1
+
+5. Instale as dependências
+pip install -r requirements.txt
+
+6. Execute o projeto
+python main.py
 
 
 - id

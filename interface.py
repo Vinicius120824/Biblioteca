@@ -655,4 +655,5 @@ botao_entrar = ctk.CTkButton(
 botao_entrar.pack(pady=20)
 
 # Manter a janela aberta
-janela.mainloop()
+def iniciar_interface():
+    janela.mainloop()

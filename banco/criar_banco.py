@@ -1,5 +1,8 @@
 import sqlite3
+import os
+
 def criar_banco():
+    os.makedirs("banco", exist_ok=True)
     conexao = sqlite3.connect("banco/biblioteca.db")
     cursor = conexao.cursor()
 

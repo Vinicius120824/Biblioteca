@@ -122,3 +122,20 @@ def buscar_livro_id(id_livro):
     conexao.close()
 
     return livro
+
+def calcular_estatisticas():
+    livros = listar_livros()
+    total = len(livros)
+    lidos = 0
+
+    if livros:
+        for livro in livros:
+            if livro[3] == "Lido":
+                lidos += 1
+
+        percentual = lidos / total * 100
+        return lidos, total, percentual
+
+    return 0, 0, 0
+
+print(calcular_estatisticas())

@@ -465,12 +465,6 @@ def clicar_buscar(entry_titulo_busca, entry_id_busca, frame_resultado):
                 criar_card_livro(frame_lista, livro)                
                 id_exibidos.add(livro[0])
 
-def criar_card_editar(frame_lista, livro):
-    criar_card_livro(frame_lista, livro, "editar")
-
-def criar_card_excluir(frame_lista, livro):
-    criar_card_livro(frame_lista, livro, "excluir")
-
 def mostrar_confirmacao_exclusao(livro):
     limpar_frame(frame_conteudo)
 
@@ -546,7 +540,7 @@ def mostrar_tela_editar():
     livros = listar_livros()
 
     for livro in livros:
-        criar_card_editar(frame_lista, livro)
+        criar_card_livro(frame_lista, livro, "editar")
 
     criar_button_voltar(frame_conteudo)
 
@@ -576,7 +570,7 @@ def mostrar_tela_excluir():
     livros = listar_livros()
 
     for livro in livros:
-        criar_card_excluir(frame_lista, livro)
+        criar_card_livro(frame_lista, livro, "excluir")
     criar_button_voltar(frame_conteudo)
 
 def mostrar_formulario_edicao(livro):

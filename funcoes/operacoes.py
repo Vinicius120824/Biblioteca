@@ -1,5 +1,5 @@
 import sqlite3
-
+from datetime import datetime
 def conexao_banco():
     conexao = sqlite3.connect("banco/biblioteca.db")
     cursor = conexao.cursor()
@@ -138,3 +138,15 @@ def calcular_estatisticas():
         return lidos, total, percentual
 
     return 0, 0, 0
+
+def relatorio_anual(ano):
+    ano = int(ano)
+    livros = listar_livros()
+    livros_lidos = []
+
+    for livro in livros:
+        if livro[3] == "Lido" and livro[5]:
+            data = datetime.strptime(livro[5], "%d/%m/%Y")
+            if data.year == ano:
+                livros_lidos.append(livro) 
+    return len(livros_lidos), livros_lidos

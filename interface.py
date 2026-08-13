@@ -5,6 +5,7 @@ from funcoes.operacoes import buscar_livro_id
 from funcoes.operacoes import buscar_livro_por_titulo
 from funcoes.operacoes import editar_livro
 from funcoes.operacoes import excluir_livro
+from funcoes.operacoes import calcular_estatisticas
 
 # Configuração da aparência
 ctk.set_appearance_mode("system")
@@ -210,6 +211,53 @@ def mostrar_menu():
         ("Editar", mostrar_tela_editar),
         ("Excluir", mostrar_tela_excluir)
     ]
+
+    lido, total, percentual = calcular_estatisticas()
+
+    frame_estatisticas = ctk.CTkFrame(
+        master=frame_menu,
+        corner_radius=10
+    )
+    frame_estatisticas.pack(
+        fill="x",
+        padx=20,
+        pady=20
+
+    )
+    label_estatisticas = ctk.CTkLabel(
+    master=frame_estatisticas,
+    text="Estatísticas",
+    font=("times new roman", 18, "bold")
+    )
+    label_estatisticas.pack(pady=(15, 10))
+
+    label_total = ctk.CTkLabel(
+        master=frame_estatisticas,
+        text=f"📚 Total de livros: {total}"
+    )
+    label_total.pack(pady=5)
+
+    label_lido = ctk.CTkLabel(
+    master=frame_estatisticas,
+    text=f"👀 Livros Lidos: {lido}"
+    )
+    label_lido.pack(pady=5)    
+
+    label_percentual = ctk.CTkLabel(
+        master=frame_estatisticas,
+        text=f"✔ Concluído: {percentual:.1f}%"
+    )
+    label_percentual.pack(pady=5)
+
+    barra_progresso = ctk.CTkProgressBar(
+        master=frame_estatisticas
+    )
+
+    barra_progresso.pack(
+        padx=30,
+        pady=(5, 15)
+    )
+    barra_progresso.set(percentual / 100)
 
     mensagem = ctk.CTkLabel(
         master=frame_conteudo,

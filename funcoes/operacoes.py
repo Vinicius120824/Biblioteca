@@ -137,5 +137,3 @@ def calcular_estatisticas():
         return lidos, total, percentual
 
     return 0, 0, 0
-
-print(calcular_estatisticas())

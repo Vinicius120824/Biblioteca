@@ -6,6 +6,8 @@ from funcoes.operacoes import buscar_livro_por_titulo
 from funcoes.operacoes import editar_livro
 from funcoes.operacoes import excluir_livro
 from funcoes.operacoes import calcular_estatisticas
+from datetime import datetime
+import re
 
 # Configuração da aparência
 ctk.set_appearance_mode("system")
@@ -371,7 +373,10 @@ def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, ent
         return
         
     valido, mensagem = validar_paginas(paginas)
-
+    if not valido:
+        mostrar_mensagem(mensagem)
+        return
+    valido, mensagem = validar_data(data)
     if not valido:
         mostrar_mensagem(mensagem)
         return
@@ -518,7 +523,7 @@ def mostrar_confirmacao_exclusao(livro):
 
     label_confirmacao = ctk.CTkLabel(
     master=frame_conteudo,
-    text=f"Tem Certeza que deseja excluir: {livro[1]}",
+    text=f"Tem Certeza que deseja excluir o Livro: {livro[1]}",
     font=("times new roman", 40, "bold")
     )
     label_confirmacao.pack(pady=40)
@@ -670,7 +675,11 @@ def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_pagin
         return
         
     valido, mensagem = validar_paginas(paginas)
+    if not valido:
+        mostrar_mensagem(mensagem)
+        return
 
+    valido, mensagem = validar_data(data)
     if not valido:
         mostrar_mensagem(mensagem)
         return
@@ -699,6 +708,20 @@ def validar_paginas(paginas):
 
     if int(paginas) <= 0:
         return False, "❌ Número de Páginas não pode ser Zero!"
+
+    return True, ""
+
+def validar_data(data):
+    if not data.strip():
+        return True, ""
+
+    if not re.fullmatch(r"\d{2}/\d{2}/\d{4}", data):
+        return False, "❌ Formato inválido! Use DD/MM/AAAA. Exemplo: 13/08/2026."
+
+    try:
+        datetime.strptime(data, "%d/%m/%Y")
+    except ValueError:
+        return False, "❌ Data inválida! Digite uma data existente."
 
     return True, ""
 

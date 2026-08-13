@@ -31,6 +31,7 @@ def listar_livros():
 
     cursor.execute("""
     SELECT * FROM livros
+    ORDER BY id DESC
     """)
 
     livros = cursor.fetchall()

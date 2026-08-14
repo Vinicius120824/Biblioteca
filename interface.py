@@ -28,16 +28,22 @@ frame_principal.pack(
     padx=20,
     pady=20
 )
+frame_principal.grid_columnconfigure(0, weight=1)
+
+frame_principal.grid_rowconfigure(0, weight=0)
+frame_principal.grid_rowconfigure(1, weight=0)
+frame_principal.grid_rowconfigure(2, weight=1)
 
 frame_titulo = ctk.CTkFrame(
     master=frame_principal,
     fg_color="transparent"
 )
 
-frame_titulo.pack(
-    fill="x",
-    pady=(20, 10),
-    expand=True
+frame_titulo.grid(
+    row=0,
+    column=0,
+    sticky="ew",
+    pady=(20, 10)
 )
 
 frame_menu =ctk.CTkFrame(
@@ -45,22 +51,23 @@ frame_menu =ctk.CTkFrame(
     fg_color="transparent"
 )
 
-frame_menu.pack(
-    fill="x",
-    pady=20,
-    expand=True
+frame_menu.grid(
+    row=1,
+    column=0,
+    sticky="ew",
+    pady=(5, 0)
 )
-
 frame_conteudo = ctk.CTkFrame(
     master=frame_principal,
     fg_color="transparent"
 )
 
-frame_conteudo.pack(
-    fill="both",
-    expand=True,
+frame_conteudo.grid(
+    row=2,
+    column=0,
+    sticky="nsew",
     padx=20,
-    pady=20
+    pady=(20, 80)
 )
 
 

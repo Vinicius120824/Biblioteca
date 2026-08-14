@@ -6,6 +6,8 @@ from funcoes.operacoes import buscar_livro_por_titulo
 from funcoes.operacoes import editar_livro
 from funcoes.operacoes import excluir_livro
 from funcoes.operacoes import calcular_estatisticas
+from funcoes.operacoes import relatorio_anual
+
 from datetime import datetime
 import re
 
@@ -211,7 +213,8 @@ def mostrar_menu():
         ("Listar", mostrar_tela_listar),
         ("Buscar", mostrar_tela_buscar),
         ("Editar", mostrar_tela_editar),
-        ("Excluir", mostrar_tela_excluir)
+        ("Excluir", mostrar_tela_excluir),
+        ("Relátorio Anual", mostrar_tela_relatorio)
     ]
 
     lido, total, percentual = calcular_estatisticas()
@@ -415,6 +418,18 @@ def button_voltar_editar(frame):
         pady=(10, 15),
         padx=20,       
     )
+
+def button_voltar(frame,text, comad):
+    button_voltar = ctk.CTkButton(
+    master=frame,
+    text=text,
+    command=comad
+    
+    )
+    button_voltar.pack(
+        pady=(10, 15),
+        padx=20,       
+    )    
 
 def mostrar_tela_buscar():
     limpar_frame(frame_conteudo)
@@ -725,6 +740,15 @@ def validar_data(data):
 
     return True, ""
 
+def validar_ano(ano):
+    if not ano.strip():
+        return False, "❌ Insira o ano!"
+    if not ano.isdigit():
+        return False, "❌ Insira apenas números no ano!"
+    if not len(ano) == 4:
+        return False, "❌ Insira o ano com 4 caracteres!"
+    return True, ""
+
 def criar_campo(master, texto, valor=None):
     label = ctk.CTkLabel(
         master=master,
@@ -789,6 +813,80 @@ def criar_campo_anotacao(master, valor=None):
     if valor is not None:
         textbox.insert("1.0", valor)
     return textbox    
+
+def mostrar_tela_relatorio():
+    limpar_frame(frame_conteudo)
+    frame_formulario = ctk.CTkScrollableFrame(
+        master=frame_conteudo,
+        fg_color="transparent"
+    )
+
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
+    titulo_cadastro = ctk.CTkLabel(
+        master=frame_formulario,
+        text="Relatório Anual",
+        font=("times new roman", 20, "bold")
+    )
+    titulo_cadastro.pack(pady=20)
+
+    entry_ano = criar_campo(frame_formulario, "Ano:")
+
+
+    button_cadastrar = ctk.CTkButton(
+        master=frame_formulario,
+        text="Pesquisar",
+        command=lambda: clicar_pesquisar_relatorio(entry_ano)
+        
+    )
+    button_cadastrar.pack(
+        pady=(10, 15),
+        padx=20     
+    )
+    criar_button_voltar(frame_formulario)
+
+def clicar_pesquisar_relatorio(entry_ano):
+    ano = entry_ano.get()
+    limpar_frame(frame_conteudo)
+
+    frame_formulario = ctk.CTkScrollableFrame(
+        master=frame_conteudo,
+        fg_color="transparent"
+    )
+    
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
+
+    valido, mensagem = validar_ano(ano)
+    if not valido:
+        mostrar_mensagem(mensagem)
+        mostrar_tela_relatorio()
+        return
+   
+
+    quantidade, livros = relatorio_anual(ano)   
+    if quantidade == 0:
+        mostrar_mensagem(f"Nenhum Livro encontrado no ano {ano}!")
+        mostrar_tela_relatorio()
+        return 
+    mostrar_mensagem(f"Quantidade de Livros Lidos no ano de {ano}: {quantidade}")
+        
+    for livro in livros:
+            criar_card_livro(frame_formulario, livro)
+
+    button_voltar(frame_conteudo,"Voltar",mostrar_tela_relatorio)
+
+
+
+
 
 botao_entrar = ctk.CTkButton(
     master=frame_menu,

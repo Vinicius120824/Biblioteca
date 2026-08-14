@@ -17,6 +17,12 @@ ctk.set_default_color_theme("dark-blue")
 
 # Criar a janela
 janela = ctk.CTk()
+largura_tela = janela.winfo_screenwidth()
+
+if largura_tela < 1000:
+    colunas = 1
+else:
+    colunas = 2
 
 frame_principal = ctk.CTkFrame(
     master=janela
@@ -43,7 +49,7 @@ frame_titulo.grid(
     row=0,
     column=0,
     sticky="ew",
-    pady=(20, 10)
+    pady=(5, 5)
 )
 
 frame_menu =ctk.CTkFrame(
@@ -67,14 +73,14 @@ frame_conteudo.grid(
     column=0,
     sticky="nsew",
     padx=20,
-    pady=(20, 80)
+    pady=(5, 10)
 )
 
 
 # Configurações da janela
 janela.title("Biblioteca")
 janela.geometry("800x600")
-janela.after(0, lambda: janela.state("zoomed"))
+# janela.after(0, lambda: janela.state("zoomed"))
 
 titulo = ctk.CTkLabel(
     master=frame_titulo,
@@ -82,7 +88,7 @@ titulo = ctk.CTkLabel(
     font=("times new roman", 28, "bold")
 )
 
-titulo.pack(pady=20)
+titulo.pack(pady=10)
 
 mensagem = ctk.CTkLabel(
     master=frame_menu,
@@ -226,8 +232,6 @@ def mostrar_menu():
         ("Excluir", mostrar_tela_excluir),
         ("Relátorio Anual", mostrar_tela_relatorio)
     ]
-
-    lido, total, percentual = calcular_estatisticas()
     frame_formulario = ctk.CTkScrollableFrame(
         master=frame_conteudo,
         fg_color="transparent"
@@ -239,12 +243,20 @@ def mostrar_menu():
         padx=20,
         pady=20
     )
+    mensagem = ctk.CTkLabel(
+        master=frame_formulario,
+        text="Menu do seu Mundinho Biblioteca!!",
+        font=("times new roman", 14, "bold")
+    )
+    mensagem.pack(pady=(0, 10))
+
+    lido, total, percentual = calcular_estatisticas()
     frame_estatisticas = ctk.CTkFrame(
         master=frame_formulario,
-        corner_radius=10
+        corner_radius=10,
+        width=400
     )
     frame_estatisticas.pack(
-        fill="x",
         padx=20,
         pady=20
 
@@ -283,26 +295,36 @@ def mostrar_menu():
 
     barra_progresso.pack(
         padx=30,
-        pady=(5, 15)
+        pady=(5, 10)
     )
     barra_progresso.set(percentual / 100)
 
-    mensagem = ctk.CTkLabel(
+    frame_botoes = ctk.CTkFrame(
         master=frame_formulario,
-        text="Menu do seu Mundinho Biblioteca!!",
-        font=("times new roman", 14, "bold")
+        fg_color="transparent"
     )
-    mensagem.pack(pady=20)
 
-    for texto, funcao in opcoes:
+    frame_botoes.pack(
+        pady=20
+    )
+    # frame_botoes.grid_columnconfigure(0, weight=1)
+    # frame_botoes.grid_columnconfigure(1, weight=1)
+
+    for indice, (texto, funcao) in enumerate(opcoes):
+        linha = indice // colunas
+        coluna = indice % colunas
         botoes = ctk.CTkButton(
-            master=frame_formulario,
+            master=frame_botoes,
             text=texto,
-            command=funcao
+            command=funcao,
+            width=250
         )
-        botoes.pack(
-        pady=(10, 15),
-        padx=20  
+
+        botoes.grid(
+            row=linha,
+            column=coluna,
+            padx=10,
+            pady=10,
         )
 
 def mostrar_tela_cadastro():
@@ -561,8 +583,10 @@ def mostrar_confirmacao_exclusao(livro):
 
     label_confirmacao = ctk.CTkLabel(
     master=frame_conteudo,
-    text=f"Tem Certeza que deseja excluir o Livro: {livro[1]}",
-    font=("times new roman", 40, "bold")
+    text=f"Tem certeza que deseja excluir o livro:\n{livro[1]}",
+    font=("times new roman", 24, "bold"),
+    wraplength=400,
+    justify="center"
     )
     label_confirmacao.pack(pady=40)
 
@@ -598,7 +622,7 @@ def confirmar_exclusao(id_livro, titulo):
     label_sucesso = ctk.CTkLabel(
         master=frame_menu,
         text=f"✔ Livro {titulo} excluído com sucesso!",
-        font=("times new roman", 20, "bold")
+        font=("times new roman", 15, "bold")
     )
     label_sucesso.pack(pady=20)
 
@@ -747,9 +771,11 @@ def mostrar_formulario_edicao(livro):
     botao_salvar = ctk.CTkButton(
     master=frame_formulario,
     text="Salvar",
-    height=20,
     command=lambda: clicar_editar(livro[0], entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao))
-    botao_salvar.pack(pady=20)
+    botao_salvar.pack(
+        pady=(10, 15),
+        padx=20,       
+    )
     button_voltar_editar(frame_formulario)
 
 def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao):

@@ -80,7 +80,7 @@ frame_conteudo.grid(
 # Configurações da janela
 janela.title("Biblioteca")
 janela.geometry("800x600")
-# janela.after(0, lambda: janela.state("zoomed"))
+janela.after(0, lambda: janela.state("zoomed"))
 
 titulo = ctk.CTkLabel(
     master=frame_titulo,

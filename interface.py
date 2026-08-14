@@ -36,7 +36,8 @@ frame_titulo = ctk.CTkFrame(
 
 frame_titulo.pack(
     fill="x",
-    pady=(20, 10)
+    pady=(20, 10),
+    expand=True
 )
 
 frame_menu =ctk.CTkFrame(
@@ -46,7 +47,8 @@ frame_menu =ctk.CTkFrame(
 
 frame_menu.pack(
     fill="x",
-    pady=20
+    pady=20,
+    expand=True
 )
 
 frame_conteudo = ctk.CTkFrame(
@@ -65,6 +67,7 @@ frame_conteudo.pack(
 # Configurações da janela
 janela.title("Biblioteca")
 janela.geometry("800x600")
+janela.after(0, lambda: janela.state("zoomed"))
 
 titulo = ctk.CTkLabel(
     master=frame_titulo,
@@ -72,7 +75,7 @@ titulo = ctk.CTkLabel(
     font=("times new roman", 28, "bold")
 )
 
-titulo.pack(pady=40)
+titulo.pack(pady=20)
 
 mensagem = ctk.CTkLabel(
     master=frame_menu,
@@ -218,9 +221,19 @@ def mostrar_menu():
     ]
 
     lido, total, percentual = calcular_estatisticas()
+    frame_formulario = ctk.CTkScrollableFrame(
+        master=frame_conteudo,
+        fg_color="transparent"
+    )
 
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
     frame_estatisticas = ctk.CTkFrame(
-        master=frame_menu,
+        master=frame_formulario,
         corner_radius=10
     )
     frame_estatisticas.pack(
@@ -234,7 +247,10 @@ def mostrar_menu():
     text="Estatísticas",
     font=("times new roman", 18, "bold")
     )
-    label_estatisticas.pack(pady=(15, 10))
+    label_estatisticas.pack(
+        pady=(15, 10),
+        expand=True
+        )
 
     label_total = ctk.CTkLabel(
         master=frame_estatisticas,
@@ -265,22 +281,12 @@ def mostrar_menu():
     barra_progresso.set(percentual / 100)
 
     mensagem = ctk.CTkLabel(
-        master=frame_conteudo,
+        master=frame_formulario,
         text="Menu do seu Mundinho Biblioteca!!",
         font=("times new roman", 14, "bold")
     )
     mensagem.pack(pady=20)
-    frame_formulario = ctk.CTkScrollableFrame(
-        master=frame_conteudo,
-        fg_color="transparent"
-    )
 
-    frame_formulario.pack(
-        fill="both",
-        expand=True,
-        padx=20,
-        pady=20
-    )
     for texto, funcao in opcoes:
         botoes = ctk.CTkButton(
             master=frame_formulario,
@@ -360,7 +366,7 @@ def mostrar_tela_listar():
     for livro in livros:
         criar_card_livro(frame_lista, livro)
 
-    criar_button_voltar(frame_conteudo)
+    criar_button_voltar(frame_lista)
 
 def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao):
     titulo = entry_titulo.get()
@@ -433,16 +439,26 @@ def button_voltar(frame,text, comad):
 
 def mostrar_tela_buscar():
     limpar_frame(frame_conteudo)
-
-    label_titulo = ctk.CTkLabel(
+    frame_formulario = ctk.CTkScrollableFrame(
         master=frame_conteudo,
+        fg_color="transparent"
+    )
+
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
+    label_titulo = ctk.CTkLabel(
+        master=frame_formulario,
         text="Título do Livro: ",
         font=("times new roman", 12, "bold")
     )
     label_titulo.pack(pady=(15, 5))
 
     entry_titulo_busca = ctk.CTkEntry(
-        master=frame_conteudo
+        master=frame_formulario
     )    
     entry_titulo_busca.pack(
         fill="x",
@@ -451,14 +467,14 @@ def mostrar_tela_buscar():
         )
 
     label_id = ctk.CTkLabel(
-        master=frame_conteudo,
+        master=frame_formulario,
         text="ID do Livro: ",
         font=("times new roman", 12, "bold")
     )
     label_id.pack(pady=(15, 5))
 
     entry_id_busca = ctk.CTkEntry(
-        master=frame_conteudo
+        master=frame_formulario
     )    
     entry_id_busca.pack(
         fill="x",
@@ -466,7 +482,7 @@ def mostrar_tela_buscar():
         padx=30
         ) 
     frame_resultado = ctk.CTkFrame(
-    master=frame_conteudo,
+    master=frame_formulario,
     fg_color="transparent"
     )
 
@@ -478,7 +494,7 @@ def mostrar_tela_buscar():
     )
 
     button_buscar = ctk.CTkButton(
-        master=frame_conteudo,
+        master=frame_formulario,
         text="Buscar",
         command=lambda:clicar_buscar(entry_titulo_busca, entry_id_busca, frame_resultado) 
     )
@@ -486,7 +502,7 @@ def mostrar_tela_buscar():
         pady=(10, 15),
         padx=20     
     )
-    criar_button_voltar(frame_conteudo)
+    criar_button_voltar(frame_formulario)
 
 def clicar_buscar(entry_titulo_busca, entry_id_busca, frame_resultado):
     titulo = entry_titulo_busca.get()
@@ -592,7 +608,28 @@ def mostrar_tela_editar():
 
     )
     label_livros.pack(pady=20)
+    variavel_busca = ctk.StringVar()
 
+    entry_busca = ctk.CTkEntry(
+    master=frame_conteudo,
+    placeholder_text="Digite o título do livro...",
+    textvariable=variavel_busca
+    )
+
+    entry_busca.pack(
+        fill="x",
+        padx=30,
+        pady=(5, 15)
+    )
+    variavel_busca.trace_add(
+    "write",
+        lambda *args: filtrar_livros(
+            variavel_busca.get(),
+            livros,
+            frame_lista,
+            "editar"
+        )
+    )
     frame_lista = ctk.CTkScrollableFrame(
         master=frame_conteudo,
         fg_color="transparent"
@@ -610,7 +647,18 @@ def mostrar_tela_editar():
     for livro in livros:
         criar_card_livro(frame_lista, livro, "editar")
 
-    criar_button_voltar(frame_conteudo)
+    criar_button_voltar(frame_lista)
+
+def filtrar_livros(texto, livros, frame_lista, acao):
+    limpar_frame(frame_lista)
+
+    texto = texto.strip().lower()
+
+    for livro in livros:
+        titulo = livro[1].lower()
+
+        if texto in titulo:
+            criar_card_livro(frame_lista, livro, acao)
 
 def mostrar_tela_excluir():
     limpar_frame(frame_conteudo)
@@ -622,7 +670,28 @@ def mostrar_tela_excluir():
 
     )
     label_livros.pack(pady=20)
+    variavel_busca = ctk.StringVar()
 
+    entry_busca = ctk.CTkEntry(
+    master=frame_conteudo,
+    placeholder_text="Digite o título do livro...",
+    textvariable=variavel_busca
+    )
+
+    entry_busca.pack(
+        fill="x",
+        padx=30,
+        pady=(5, 15)
+    )
+    variavel_busca.trace_add(
+    "write",
+        lambda *args: filtrar_livros(
+            variavel_busca.get(),
+            livros,
+            frame_lista,
+            "excluir"
+        )
+    )
     frame_lista = ctk.CTkScrollableFrame(
         master=frame_conteudo,
         fg_color="transparent"
@@ -639,7 +708,7 @@ def mostrar_tela_excluir():
 
     for livro in livros:
         criar_card_livro(frame_lista, livro, "excluir")
-    criar_button_voltar(frame_conteudo)
+    criar_button_voltar(frame_lista)
 
 def mostrar_formulario_edicao(livro):
     limpar_frame(frame_conteudo)
@@ -883,10 +952,6 @@ def clicar_pesquisar_relatorio(entry_ano):
             criar_card_livro(frame_formulario, livro)
 
     button_voltar(frame_conteudo,"Voltar",mostrar_tela_relatorio)
-
-
-
-
 
 botao_entrar = ctk.CTkButton(
     master=frame_menu,

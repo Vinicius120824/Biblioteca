@@ -690,6 +690,7 @@ def filtrar_livros(texto, livros, frame_lista, acao):
 
         if texto in titulo:
             criar_card_livro(frame_lista, livro, acao)
+    criar_button_voltar(frame_lista)    
 
 def mostrar_tela_excluir():
     limpar_frame(frame_conteudo)

@@ -19,6 +19,10 @@ O sistema permite o gerenciamento de uma biblioteca pessoal aplicando as operaç
   - Lido
   - Lendo
   - Não Lido
+- 💻 Definir o foramto de livro como:
+  - Físico
+  - E-book
+
 ## 🛠️ Tecnologias utilizadas
 
 - **Python** — linguagem principal utilizada no desenvolvimento

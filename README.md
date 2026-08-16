@@ -19,9 +19,10 @@ O sistema permite o gerenciamento de uma biblioteca pessoal aplicando as operaç
   - Lido
   - Lendo
   - Não Lido
-- 💻 Definir o foramto de livro como:
+- 💻 Definir o formato de livro como:
   - Físico
   - E-book
+- Relatório de Busca de livros lidos por ano
 
 ## 🛠️ Tecnologias utilizadas
 

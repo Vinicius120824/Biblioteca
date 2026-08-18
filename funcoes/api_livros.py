@@ -25,18 +25,26 @@ def buscar_livros_api(titulo):
 
     for livro in livros:
         informacoes = livro["volumeInfo"]
-
-        titulo = informacoes.get("title", "Título não informado")
+        title = informacoes.get("title", "Título não informado")
         autores = informacoes.get("authors")
         paginas = informacoes.get("pageCount", "Não informado")
+        imagem = informacoes.get("imageLinks", {})
+        
+
+        if imagem:
+            capa = imagem.get("thumbnail")
+        else:
+            capa = {}    
         if autores:
             autores_texto = ", ".join(autores)
         else:
             autores_texto = "Autores Não Encontrado!"
+
         livro_tratado = {
-            "titulo": titulo,
+            "titulo": title,
             "autores": autores_texto,
-            "paginas": paginas
+            "paginas": paginas,
+            "capa": capa
         }
         resultado.append(livro_tratado)
     return resultado

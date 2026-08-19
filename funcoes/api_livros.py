@@ -34,7 +34,7 @@ def buscar_livros_api(titulo):
         if imagem:
             capa = imagem.get("thumbnail")
         else:
-            capa = {}    
+            capa = None    
         if autores:
             autores_texto = ", ".join(autores)
         else:

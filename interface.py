@@ -11,6 +11,9 @@ from funcoes.api_livros import buscar_livros_api
 
 from datetime import datetime
 import re
+from PIL import Image
+from io import BytesIO
+import requests
 
 
 
@@ -111,7 +114,15 @@ def criar_card_livro(frame_lista, livro, acao=None):
         padx=20,
         pady=20
     )
-
+    # CAPA LIVRO
+    imagem_capa = criar_imagem_capa(livro[8])
+    if imagem_capa:
+        label_capa = ctk.CTkLabel(
+            master=card_livro,
+            text="",
+            image=imagem_capa
+        )
+        label_capa.pack(pady=10)
     #Menu Titulo
     label_titulo = ctk.CTkLabel(
         master=card_livro,
@@ -232,6 +243,7 @@ def criar_card_livro(frame_lista, livro, acao=None):
         ) 
 
 def criar_card_livro_api(frame_lista, livro, acao=None):
+
     card_livro = ctk.CTkFrame(
         master=frame_lista,
         corner_radius=10,
@@ -243,7 +255,15 @@ def criar_card_livro_api(frame_lista, livro, acao=None):
         padx=20,
         pady=20
     )
-
+    # CAPA LIVRO
+    imagem_capa = criar_imagem_capa(livro["capa"])
+    if imagem_capa:
+        label_capa = ctk.CTkLabel(
+            master=card_livro,
+            text="",
+            image=imagem_capa
+        )
+        label_capa.pack(pady=10)
     label_titulo = ctk.CTkLabel(
         master=card_livro,
         text=f"📖 {livro['titulo']}",
@@ -284,7 +304,7 @@ def criar_card_livro_api(frame_lista, livro, acao=None):
         botao_adicionar = ctk.CTkButton(
             master=card_livro,
             text="Adicionar",
-            command=lambda: cadastrar_livro(livro)
+            command=lambda: mostrar_cadastro_livro_api(livro)
         )
 
         botao_adicionar.pack(
@@ -292,6 +312,89 @@ def criar_card_livro_api(frame_lista, livro, acao=None):
             padx=20,
             anchor="e"
         )
+
+def mostrar_cadastro_livro_api(livro):
+    limpar_frame(frame_conteudo)
+
+    frame_formulario = ctk.CTkScrollableFrame(
+        master=frame_conteudo,
+        fg_color="transparent"
+    )
+
+    frame_formulario.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
+
+    titulo_cadastro = ctk.CTkLabel(
+        master=frame_formulario,
+        text="Adicionar Livro",
+        font=("times new roman", 20, "bold")
+    )
+
+    titulo_cadastro.pack(pady=20)
+
+    entry_titulo = criar_campo(
+        frame_formulario,
+        "Título:",
+        livro["titulo"]
+    )
+
+    entry_autor = criar_campo(
+        frame_formulario,
+        "Autor:",
+        livro["autores"]
+    )
+
+    entry_status = criar_campo_selecao(
+        frame_formulario,
+        "Status:",
+        ["Lido", "Lendo", "Não Lido"]
+    )
+
+    entry_paginas = criar_campo(
+        frame_formulario,
+        "Número de Páginas:",
+        livro["paginas"]
+    )
+
+    entry_data = criar_campo(
+        frame_formulario,
+        "Data Leitura:"
+    )
+
+    entry_formato = criar_campo_selecao(
+        frame_formulario,
+        "Formato:",
+        ["Físico", "E-book"]
+    )
+    entry_capa = criar_campo(frame_formulario, "Url capa: ", livro["capa"])
+    entry_anotacao = criar_campo_anotacao(
+        frame_formulario
+    )
+
+    button_cadastrar = ctk.CTkButton(
+        master=frame_formulario,
+        text="Cadastrar",
+        command=lambda: clicar_cadastrar(
+            entry_titulo,
+            entry_autor,
+            entry_status,
+            entry_paginas,
+            entry_data,
+            entry_formato,
+            entry_anotacao,
+            entry_capa
+        )
+    )
+
+    button_cadastrar.pack(
+        pady=(10, 15),
+        padx=20
+    )
+    criar_button(frame_formulario, pesquisar_livro_api)
 
 def limpar_frame(frame):
     for widget in frame.winfo_children():
@@ -432,11 +535,12 @@ def mostrar_tela_cadastro():
     entry_data = criar_campo(frame_formulario, "Data Leitura:")
     entry_formato = criar_campo_selecao(frame_formulario, "Formato:", ["Físico", "E-book"])
     entry_anotacao = criar_campo_anotacao(frame_formulario)
+    entry_capa = criar_campo(frame_formulario, "Insira o Url imagem: ")
 
     button_cadastrar = ctk.CTkButton(
         master=frame_formulario,
         text="Cadastrar",
-        command=lambda: clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao)
+        command=lambda: clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa)
         
     )
     button_cadastrar.pack(
@@ -475,7 +579,7 @@ def mostrar_tela_listar():
 
     criar_button_voltar(frame_lista)
 
-def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao):
+def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa):
     titulo = entry_titulo.get()
     autor = entry_autor.get()
     status = entry_status.get()
@@ -483,6 +587,7 @@ def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, ent
     data = entry_data.get()
     formato = entry_formato.get()
     anotacao = entry_anotacao.get("1.0", "end").strip()
+    capa = entry_capa.get()
 
     if not titulo.strip():
         mostrar_mensagem("❌ Insira um Título!")
@@ -499,7 +604,7 @@ def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, ent
 
     paginas = int(paginas)           
 
-    cadastrar_livro(titulo,autor,status,paginas,data,formato,anotacao)
+    cadastrar_livro(titulo,autor,status,paginas,data,formato,anotacao,capa)
     
     mostrar_mensagem("✔Livro Cadastrado com Sucesso!")      
     mostrar_tela_cadastro()
@@ -513,6 +618,18 @@ def criar_button_voltar(frame):
     master=frame,
     text="Voltar",
     command=mostrar_menu_principal
+    
+    )
+    button_voltar.pack(
+        pady=(10, 15),
+        padx=20        
+    )
+
+def criar_button(frame, fuct):
+    button_voltar = ctk.CTkButton(
+    master=frame,
+    text="Voltar",
+    command=fuct
     
     )
     button_voltar.pack(
@@ -846,18 +963,19 @@ def mostrar_formulario_edicao(livro):
     entry_data = criar_campo(frame_formulario, "Data Leitura:", livro[5])
     entry_formato = criar_campo_selecao(frame_formulario,"Formato:",["Físico", "E-book"],livro[6])
     entry_anotacao = criar_campo_anotacao(frame_formulario, livro[7])
+    entry_capa = criar_campo(frame_formulario, "Insira o Url imagem:", livro[8])
 
     botao_salvar = ctk.CTkButton(
     master=frame_formulario,
     text="Salvar",
-    command=lambda: clicar_editar(livro[0], entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao))
+    command=lambda: clicar_editar(livro[0], entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa))
     botao_salvar.pack(
         pady=(10, 15),
         padx=20,       
     )
     button_voltar_editar(frame_formulario)
 
-def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao):
+def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa):
     titulo = entry_titulo.get()
     autor = entry_autor.get()
     status = entry_status.get()
@@ -865,6 +983,7 @@ def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_pagin
     data = entry_data.get()
     formato = entry_formato.get()
     anotacao = entry_anotacao.get("1.0", "end").strip()
+    capa = entry_capa.get()
 
     if not titulo.strip():
         mostrar_mensagem("❌Insira um Título!")
@@ -882,7 +1001,7 @@ def clicar_editar(id_livro, entry_titulo, entry_autor, entry_status, entry_pagin
 
     paginas = int(paginas)            
 
-    editar_livro(id_livro, titulo, autor, status, paginas, data, formato, anotacao)
+    editar_livro(id_livro, titulo, autor, status, paginas, data, formato, anotacao, capa)
 
     mostrar_mensagem(f"✔Livro {titulo} Editado com Sucesso!")
     
@@ -1081,7 +1200,7 @@ def pesquisar_livro_api():
         pady=20
     )
     botao_pesquisar = ctk.CTkButton(
-        master=frame_conteudo,
+        master=frame_lista,
         text="Pesquisar",
         command=lambda: executar_busca_api(
             titulo,
@@ -1090,8 +1209,9 @@ def pesquisar_livro_api():
     )
 
     botao_pesquisar.pack(
-        pady=10
-    )   
+        pady=(10, 15),
+        padx=20 
+        )   
     criar_button_voltar(frame_lista)
 
 def executar_busca_api(entry_titulo, frame_lista):
@@ -1115,6 +1235,30 @@ def executar_busca_api(entry_titulo, frame_lista):
             livro,
             "adicionar"
         )
+
+    criar_button(frame_lista, pesquisar_livro_api)
+
+def criar_imagem_capa(url_capa, tamanho=(100, 150)):
+    if not url_capa:
+        return None
+
+    try:
+        resposta = requests.get(url_capa, timeout=5)
+
+        imagem_pil = Image.open(
+            BytesIO(resposta.content)
+        )
+
+        return ctk.CTkImage(
+            light_image=imagem_pil,
+            dark_image=imagem_pil,
+            size=tamanho
+        )
+
+    except Exception as erro:
+        print(f"Erro ao carregar capa: {erro}")
+        return None
+
 botao_entrar = ctk.CTkButton(
     master=frame_menu,
     text="Entrar",

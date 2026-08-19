@@ -23,6 +23,7 @@ O sistema permite o gerenciamento de uma biblioteca pessoal aplicando as operaç
   - Físico
   - E-book
 - Relatório de Busca de livros lidos por ano
+- Pesquisar Livros e adicionar a biblioteca online
 
 ## 🛠️ Tecnologias utilizadas
 
@@ -31,6 +32,7 @@ O sistema permite o gerenciamento de uma biblioteca pessoal aplicando as operaç
 - **CustomTkinter** — criação da interface gráfica
 - **Git** — controle de versão do projeto
 - **GitHub** — hospedagem e gerenciamento do repositório
+- **Aplicação API do Google Books** - usado requisições na biblioteca Google online 
 
 
 ## ▶️ Como executar o projeto

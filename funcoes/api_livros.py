@@ -28,7 +28,7 @@ def buscar_livros_api(titulo):
         title = informacoes.get("title", "Título não informado")
         autores = informacoes.get("authors")
         paginas = informacoes.get("pageCount", "Não informado")
-        imagem = informacoes.get("imageLinks", {})
+        imagem = informacoes.get("imageLinks")
         
 
         if imagem:

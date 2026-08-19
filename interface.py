@@ -7,9 +7,12 @@ from funcoes.operacoes import editar_livro
 from funcoes.operacoes import excluir_livro
 from funcoes.operacoes import calcular_estatisticas
 from funcoes.operacoes import relatorio_anual
+from funcoes.api_livros import buscar_livros_api
 
 from datetime import datetime
 import re
+
+
 
 # Configuração da aparência
 ctk.set_appearance_mode("system")
@@ -215,6 +218,80 @@ def criar_card_livro(frame_lista, livro, acao=None):
             padx=20,
             anchor="e"
         )    
+    elif acao == "adicionar":
+        button_excluir = ctk.CTkButton(
+        master=card_livro,
+        text="Adicionar",
+        command=lambda: cadastrar_livro(livro)
+        )
+
+        button_excluir.pack(
+            pady=(10, 15),
+            padx=20,
+            anchor="e"
+        ) 
+
+def criar_card_livro_api(frame_lista, livro, acao=None):
+    card_livro = ctk.CTkFrame(
+        master=frame_lista,
+        corner_radius=10,
+        fg_color="#2b2b2b",
+    )
+
+    card_livro.pack(
+        fill="x",
+        padx=20,
+        pady=20
+    )
+
+    label_titulo = ctk.CTkLabel(
+        master=card_livro,
+        text=f"📖 {livro['titulo']}",
+        font=("times new roman", 12)
+    )
+
+    label_titulo.pack(
+        pady=(10, 2),
+        padx=20,
+        anchor="w"
+    )
+
+    label_autor = ctk.CTkLabel(
+        master=card_livro,
+        text=f"👤 {livro['autores']}",
+        font=("times new roman", 12)
+    )
+
+    label_autor.pack(
+        pady=2,
+        padx=20,
+        anchor="w"
+    )
+
+    label_paginas = ctk.CTkLabel(
+        master=card_livro,
+        text=f"📄 {livro['paginas']} páginas",
+        font=("times new roman", 12)
+    )
+
+    label_paginas.pack(
+        pady=2,
+        padx=20,
+        anchor="w"
+    )
+
+    if acao == "adicionar":
+        botao_adicionar = ctk.CTkButton(
+            master=card_livro,
+            text="Adicionar",
+            command=lambda: cadastrar_livro(livro)
+        )
+
+        botao_adicionar.pack(
+            pady=(10, 15),
+            padx=20,
+            anchor="e"
+        )
 
 def limpar_frame(frame):
     for widget in frame.winfo_children():
@@ -230,7 +307,8 @@ def mostrar_menu():
         ("Buscar", mostrar_tela_buscar),
         ("Editar", mostrar_tela_editar),
         ("Excluir", mostrar_tela_excluir),
-        ("Relátorio Anual", mostrar_tela_relatorio)
+        ("Relátorio Anual", mostrar_tela_relatorio),
+        ("Pesquisar Livro", pesquisar_livro_api)
     ]
     frame_formulario = ctk.CTkScrollableFrame(
         master=frame_conteudo,
@@ -987,6 +1065,56 @@ def clicar_pesquisar_relatorio(entry_ano):
 
     button_voltar(frame_conteudo,"Voltar",mostrar_tela_relatorio)
 
+def pesquisar_livro_api():
+    limpar_frame(frame_conteudo)
+    titulo = criar_campo(frame_conteudo, "Insira Título: ")
+    
+    frame_lista = ctk.CTkScrollableFrame(
+        master=frame_conteudo,
+        fg_color="transparent"
+    )
+
+    frame_lista.pack(
+        fill="both",
+        expand=True,
+        padx=20,
+        pady=20
+    )
+    botao_pesquisar = ctk.CTkButton(
+        master=frame_conteudo,
+        text="Pesquisar",
+        command=lambda: executar_busca_api(
+            titulo,
+            frame_lista
+        )
+    )
+
+    botao_pesquisar.pack(
+        pady=10
+    )   
+    criar_button_voltar(frame_lista)
+
+def executar_busca_api(entry_titulo, frame_lista):
+    titulo = entry_titulo.get().strip()
+
+    if not titulo:
+        mostrar_mensagem("❌ Insira um Título!")
+        return
+    limpar_frame(frame_lista)
+
+    livros_api = buscar_livros_api(titulo)
+
+    if not livros_api:
+        mostrar_mensagem(
+            f"❌ Nenhum livro encontrado para: {titulo}"
+        )
+        return
+    for livro in livros_api:
+        criar_card_livro_api(
+            frame_lista,
+            livro,
+            "adicionar"
+        )
 botao_entrar = ctk.CTkButton(
     master=frame_menu,
     text="Entrar",

@@ -1228,6 +1228,7 @@ def executar_busca_api(entry_titulo, frame_lista):
         mostrar_mensagem(
             f"❌ Nenhum livro encontrado para: {titulo}"
         )
+        button_voltar(frame_lista, "Voltar a Pesquisar", pesquisar_livro_api)
         return
     for livro in livros_api:
         criar_card_livro_api(

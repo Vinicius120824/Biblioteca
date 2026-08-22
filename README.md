@@ -32,7 +32,7 @@ O sistema permite o gerenciamento de uma biblioteca pessoal aplicando as operaç
 - **CustomTkinter** — criação da interface gráfica
 - **Git** — controle de versão do projeto
 - **GitHub** — hospedagem e gerenciamento do repositório
-- **Aplicação API do Google Books** - usado requisições na biblioteca Google online 
+- **Google Books API** — pesquisa de livros e obtenção de metadados e capas 
 
 
 ## ▶️ Como executar o projeto

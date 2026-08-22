@@ -538,7 +538,7 @@ def mostrar_tela_cadastro():
     entry_capa = criar_campo(frame_formulario, "Insira o Url imagem: ")
 
     button_cadastrar = ctk.CTkButton(
-        master=frame_formulario,
+        master=frame_conteudo,
         text="Cadastrar",
         command=lambda: clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa)
         
@@ -547,7 +547,7 @@ def mostrar_tela_cadastro():
         pady=(10, 15),
         padx=20     
     )
-    criar_button_voltar(frame_formulario)
+    criar_button_voltar(frame_conteudo)
 
 def mostrar_tela_listar():
     limpar_frame(frame_conteudo)
@@ -577,7 +577,7 @@ def mostrar_tela_listar():
     for livro in livros:
         criar_card_livro(frame_lista, livro)
 
-    criar_button_voltar(frame_lista)
+    criar_button_voltar(frame_conteudo)
 
 def clicar_cadastrar(entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa):
     titulo = entry_titulo.get()
@@ -663,26 +663,26 @@ def button_voltar(frame,text, comad):
 
 def mostrar_tela_buscar():
     limpar_frame(frame_conteudo)
-    frame_formulario = ctk.CTkScrollableFrame(
-        master=frame_conteudo,
-        fg_color="transparent"
-    )
+    # frame_formulario = ctk.CTkScrollableFrame(
+    #     master=frame_conteudo,
+    #     fg_color="transparent"
+    # )
 
-    frame_formulario.pack(
-        fill="both",
-        expand=True,
-        padx=20,
-        pady=20
-    )
+    # frame_formulario.pack(
+    #     fill="both",
+    #     expand=True,
+    #     padx=20,
+    #     pady=20
+    # )
     label_titulo = ctk.CTkLabel(
-        master=frame_formulario,
+        master=frame_conteudo,
         text="Título do Livro: ",
         font=("times new roman", 12, "bold")
     )
     label_titulo.pack(pady=(15, 5))
 
     entry_titulo_busca = ctk.CTkEntry(
-        master=frame_formulario
+        master=frame_conteudo
     )    
     entry_titulo_busca.pack(
         fill="x",
@@ -691,14 +691,14 @@ def mostrar_tela_buscar():
         )
 
     label_id = ctk.CTkLabel(
-        master=frame_formulario,
+        master=frame_conteudo,
         text="ID do Livro: ",
         font=("times new roman", 12, "bold")
     )
     label_id.pack(pady=(15, 5))
 
     entry_id_busca = ctk.CTkEntry(
-        master=frame_formulario
+        master=frame_conteudo
     )    
     entry_id_busca.pack(
         fill="x",
@@ -706,7 +706,7 @@ def mostrar_tela_buscar():
         padx=30
         ) 
     frame_resultado = ctk.CTkFrame(
-    master=frame_formulario,
+    master=frame_conteudo,
     fg_color="transparent"
     )
 
@@ -714,11 +714,11 @@ def mostrar_tela_buscar():
         fill="both",
         expand=True,
         padx=20,
-        pady=20
+        pady=(5, 0)
     )
 
     button_buscar = ctk.CTkButton(
-        master=frame_formulario,
+        master=frame_conteudo,
         text="Buscar",
         command=lambda:clicar_buscar(entry_titulo_busca, entry_id_busca, frame_resultado) 
     )
@@ -726,7 +726,7 @@ def mostrar_tela_buscar():
         pady=(10, 15),
         padx=20     
     )
-    criar_button_voltar(frame_formulario)
+    criar_button_voltar(frame_conteudo)
 
 def clicar_buscar(entry_titulo_busca, entry_id_busca, frame_resultado):
     titulo = entry_titulo_busca.get()
@@ -873,7 +873,7 @@ def mostrar_tela_editar():
     for livro in livros:
         criar_card_livro(frame_lista, livro, "editar")
 
-    criar_button_voltar(frame_lista)
+    criar_button_voltar(frame_conteudo)
 
 def filtrar_livros(texto, livros, frame_lista, acao):
     limpar_frame(frame_lista)
@@ -885,7 +885,7 @@ def filtrar_livros(texto, livros, frame_lista, acao):
 
         if texto in titulo:
             criar_card_livro(frame_lista, livro, acao)
-    criar_button_voltar(frame_lista)    
+    criar_button_voltar(frame_conteudo)    
 
 def mostrar_tela_excluir():
     limpar_frame(frame_conteudo)
@@ -935,9 +935,9 @@ def mostrar_tela_excluir():
 
     for livro in livros:
         criar_card_livro(frame_lista, livro, "excluir")
-    criar_button_voltar(frame_lista)
+    criar_button_voltar(frame_conteudo)
 
-def mostrar_formulario_edicao(livro):
+def mostrar_formulario_edicao(livro):      
     limpar_frame(frame_conteudo)
     frame_formulario = ctk.CTkScrollableFrame(
         master=frame_conteudo,
@@ -1200,7 +1200,7 @@ def pesquisar_livro_api():
         pady=20
     )
     botao_pesquisar = ctk.CTkButton(
-        master=frame_lista,
+        master=frame_conteudo,
         text="Pesquisar",
         command=lambda: executar_busca_api(
             titulo,
@@ -1212,7 +1212,7 @@ def pesquisar_livro_api():
         pady=(10, 15),
         padx=20 
         )   
-    criar_button_voltar(frame_lista)
+    criar_button_voltar(frame_conteudo)
 
 def executar_busca_api(entry_titulo, frame_lista):
     titulo = entry_titulo.get().strip()
@@ -1228,7 +1228,7 @@ def executar_busca_api(entry_titulo, frame_lista):
         mostrar_mensagem(
             f"❌ Nenhum livro encontrado para: {titulo}"
         )
-        button_voltar(frame_lista, "Voltar a Pesquisar", pesquisar_livro_api)
+        button_voltar(frame_conteudo, "Voltar a Pesquisar", pesquisar_livro_api)
         return
     for livro in livros_api:
         criar_card_livro_api(
@@ -1237,7 +1237,7 @@ def executar_busca_api(entry_titulo, frame_lista):
             "adicionar"
         )
 
-    criar_button(frame_lista, pesquisar_livro_api)
+    # criar_button(frame_conteudo, pesquisar_livro_api)
 
 def criar_imagem_capa(url_capa, tamanho=(100, 150)):
     if not url_capa:

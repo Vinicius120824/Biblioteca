@@ -87,4 +87,4 @@ python main.py
 
 ### Pesquisa com Google Books
 
-![Pesquisa de livros usando a Google Books API](docs/pesquisa-google-books.png)
+![Pesquisa de livros usando a Google Books API](docs/pesquisar-google-books.png)

@@ -74,3 +74,17 @@ pip install -r requirements.txt
 ```bash
 python main.py
 ```
+
+## 🖼️ Interface
+
+### Tela principal
+
+![Tela principal da biblioteca](docs/tela-principal.png)
+
+### Meus livros
+
+![Tela com os livros cadastrados](docs/meus-livros.png)
+
+### Pesquisa com Google Books
+
+![Pesquisa de livros usando a Google Books API](docs/pesquisa-google-books.png)

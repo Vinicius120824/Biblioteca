@@ -3,3 +3,4 @@ customtkinter
 requests
 python-dotenv
 Pillow
+pytest

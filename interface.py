@@ -8,6 +8,11 @@ from funcoes.operacoes import excluir_livro
 from funcoes.operacoes import calcular_estatisticas
 from funcoes.operacoes import relatorio_anual
 from funcoes.api_livros import buscar_livros_api
+from funcoes.validacoes import (
+    validar_paginas,
+    validar_data,
+    validar_ano
+)
 
 from datetime import datetime
 import re
@@ -1014,40 +1019,40 @@ def mostrar_mensagem(mensagem):
             )
     label_validacao.pack(pady=20)    
 
-def validar_paginas(paginas):
-    if not paginas.strip():
-        return False, "❌ Insira Páginas do Livro!"
+# def validar_paginas(paginas):
+#     if not paginas.strip():
+#         return False, "❌ Insira Páginas do Livro!"
 
-    if not paginas.isdigit():
-        return False, "❌ Insira Apenas Número de Páginas!"
+#     if not paginas.isdigit():
+#         return False, "❌ Insira Apenas Número de Páginas!"
 
-    if int(paginas) <= 0:
-        return False, "❌ Número de Páginas não pode ser Zero!"
+#     if int(paginas) <= 0:
+#         return False, "❌ Número de Páginas não pode ser Zero!"
 
-    return True, ""
+#     return True, ""
 
-def validar_data(data):
-    if not data.strip():
-        return True, ""
+# def validar_data(data):
+#     if not data.strip():
+#         return True, ""
 
-    if not re.fullmatch(r"\d{2}/\d{2}/\d{4}", data):
-        return False, "❌ Formato inválido! Use DD/MM/AAAA. Exemplo: 13/08/2026."
+#     if not re.fullmatch(r"\d{2}/\d{2}/\d{4}", data):
+#         return False, "❌ Formato inválido! Use DD/MM/AAAA. Exemplo: 13/08/2026."
 
-    try:
-        datetime.strptime(data, "%d/%m/%Y")
-    except ValueError:
-        return False, "❌ Data inválida! Digite uma data existente."
+#     try:
+#         datetime.strptime(data, "%d/%m/%Y")
+#     except ValueError:
+#         return False, "❌ Data inválida! Digite uma data existente."
 
-    return True, ""
+#     return True, ""
 
-def validar_ano(ano):
-    if not ano.strip():
-        return False, "❌ Insira o ano!"
-    if not ano.isdigit():
-        return False, "❌ Insira apenas números no ano!"
-    if not len(ano) == 4:
-        return False, "❌ Insira o ano com 4 caracteres!"
-    return True, ""
+# def validar_ano(ano):
+#     if not ano.strip():
+#         return False, "❌ Insira o ano!"
+#     if not ano.isdigit():
+#         return False, "❌ Insira apenas números no ano!"
+#     if not len(ano) == 4:
+#         return False, "❌ Insira o ano com 4 caracteres!"
+#     return True, ""
 
 def criar_campo(master, texto, valor=None):
     label = ctk.CTkLabel(

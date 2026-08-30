@@ -1,5 +1,23 @@
 import sqlite3
 from datetime import datetime
+from modelos.livro import Livro
+
+def converter_registro_para_livro(registro):
+        if registro is None:
+            return None
+        livro = Livro(
+            id=registro[0],
+            titulo=registro[1],
+            autor=registro[2],
+            status=registro[3],
+            paginas=registro[4],
+            data=registro[5],
+            formato=registro[6],
+            anotacoes=registro[7],
+            capa=registro[8]
+        )
+        return livro
+
 def conexao_banco():
     conexao = sqlite3.connect("banco/biblioteca.db")
     cursor = conexao.cursor()
@@ -35,9 +53,13 @@ def listar_livros():
     ORDER BY id DESC
     """)
 
-    livros = cursor.fetchall()
-
+    registros = cursor.fetchall()
+    livros = []
+    for registro in registros:
+        livro = converter_registro_para_livro(registro)
+        livros.append(livro)    
     conexao.close()
+
     return livros
 
 def buscar_livro_por_titulo(titulo):
@@ -47,10 +69,17 @@ def buscar_livro_por_titulo(titulo):
     cursor.execute("""
         SELECT * FROM livros WHERE titulo = ?
     """, (titulo,))
-    livro = cursor.fetchall()
-    
+    registros = cursor.fetchall()
+
+    livros = []
+
+    for registro in registros:
+        livro = converter_registro_para_livro(registro)
+        livros.append(livro)
+
     conexao.close()
-    return livro
+
+    return livros
 
 def editar_livro(id_livro, novo_titulo, novo_autor, novo_status, novo_numero_paginas, nova_data_leitura, novo_formato,novo_anotacao,nova_capa):
     conexao, cursor = conexao_banco()
@@ -59,17 +88,17 @@ def editar_livro(id_livro, novo_titulo, novo_autor, novo_status, novo_numero_pag
 
     if livro:
         if novo_titulo == "":
-            novo_titulo = livro[1]
+            novo_titulo = livro.titulo
         if novo_autor == "":
-            novo_autor = livro[2]
+            novo_autor = livro.autor
         if novo_status == "":
-            novo_status = livro[3]
+            novo_status = livro.status
         if novo_numero_paginas == "":
-            novo_numero_paginas = livro[4]          
+            novo_numero_paginas = livro.paginas          
         else:
             novo_numero_paginas = int(novo_numero_paginas)
         if nova_data_leitura == "":
-            nova_data_leitura = livro[5]              
+            nova_data_leitura = livro.data              
 
         cursor.execute("""
                 UPDATE livros
@@ -120,8 +149,8 @@ def buscar_livro_id(id_livro):
         SELECT * FROM livros
         WHERE id = ?    
     """, (id_livro,))
-    livro = cursor.fetchone()
-
+    registro = cursor.fetchone()
+    livro = converter_registro_para_livro(registro)
     conexao.close()
 
     return livro
@@ -133,7 +162,7 @@ def calcular_estatisticas():
 
     if livros:
         for livro in livros:
-            if livro[3] == "Lido":
+            if livro.status == "Lido":
                 lidos += 1
 
         percentual = lidos / total * 100
@@ -147,8 +176,8 @@ def relatorio_anual(ano):
     livros_lidos = []
 
     for livro in livros:
-        if livro[3] == "Lido" and livro[5]:
-            data = datetime.strptime(livro[5], "%d/%m/%Y")
+        if livro.status == "Lido" and livro.data:
+            data = datetime.strptime(livro.data, "%d/%m/%Y")
             if data.year == ano:
                 livros_lidos.append(livro) 
     return len(livros_lidos), livros_lidos

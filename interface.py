@@ -14,8 +14,6 @@ from funcoes.validacoes import (
     validar_ano
 )
 
-from datetime import datetime
-import re
 from PIL import Image
 from io import BytesIO
 import requests
@@ -120,7 +118,7 @@ def criar_card_livro(frame_lista, livro, acao=None):
         pady=20
     )
     # CAPA LIVRO
-    imagem_capa = criar_imagem_capa(livro[8])
+    imagem_capa = criar_imagem_capa(livro.capa)
     if imagem_capa:
         label_capa = ctk.CTkLabel(
             master=card_livro,
@@ -131,7 +129,7 @@ def criar_card_livro(frame_lista, livro, acao=None):
     #Menu Titulo
     label_titulo = ctk.CTkLabel(
         master=card_livro,
-        text=f"📖 {livro[1]}",
+        text=f"📖 {livro.titulo}",
         font=("times new roman", 12)
     )
     label_titulo.pack(
@@ -143,7 +141,7 @@ def criar_card_livro(frame_lista, livro, acao=None):
     #Menu Autor
     label_autor = ctk.CTkLabel(
         master=card_livro,
-        text=f"👤 {livro[2]}",
+        text=f"👤 {livro.autor}",
         font=("times new roman", 12)
     )
     label_autor.pack(
@@ -151,8 +149,8 @@ def criar_card_livro(frame_lista, livro, acao=None):
         padx=20,
         anchor="w"
     )
-    if livro[3]:
-        status = livro[3]
+    if livro.status:
+        status = livro.status
     else:
         status = "Não informado!"
     label_status = ctk.CTkLabel(
@@ -167,7 +165,7 @@ def criar_card_livro(frame_lista, livro, acao=None):
     )
     label_paginas = ctk.CTkLabel(
         master=card_livro,
-        text=f"📄 {livro[4]} páginas",
+        text=f"📄 {livro.paginas} páginas",
         font=("times new roman", 12)
     )
     label_paginas.pack(
@@ -175,8 +173,8 @@ def criar_card_livro(frame_lista, livro, acao=None):
         padx=20,
         anchor="w"
     )
-    if livro[5]:
-        data = livro[5]
+    if livro.data:
+        data = livro.data
     else:
         data = "Não Informado!"
         
@@ -192,7 +190,7 @@ def criar_card_livro(frame_lista, livro, acao=None):
     )
     label_formato = ctk.CTkLabel(
         master=card_livro,
-        text=f"💻{livro[6]}",
+        text=f"💻{livro.formato}",
         font=("times new roman", 12)
     )
     label_formato.pack(
@@ -202,7 +200,7 @@ def criar_card_livro(frame_lista, livro, acao=None):
     )
     label_anotacao = ctk.CTkLabel(
         master=card_livro,
-        text=f"📋{livro[7]}",
+        text=f"📋{livro.anotacoes}",
         font=("times new roman", 12)
     )
     label_anotacao.pack(
@@ -761,9 +759,9 @@ def clicar_buscar(entry_titulo_busca, entry_id_busca, frame_resultado):
             if not livro:
                 mostrar_mensagem(f"❌Livro não encontrado pelo ID: {id_livro}")
 
-            elif livro and livro[0] not in id_exibidos:
+            elif livro and livro.id not in id_exibidos:
                 criar_card_livro(frame_lista, livro)
-                id_exibidos.add(livro[0])
+                id_exibidos.add(livro.id)
     if titulo:
         if not titulo.strip():
             mostrar_mensagem("❌Insira o Titulo!")
@@ -774,16 +772,16 @@ def clicar_buscar(entry_titulo_busca, entry_id_busca, frame_resultado):
             return                          
 
         for livro in livros:
-            if livro[0] not in id_exibidos:
+            if livro.id not in id_exibidos:
                 criar_card_livro(frame_lista, livro)                
-                id_exibidos.add(livro[0])
+                id_exibidos.add(livro.id)
 
 def mostrar_confirmacao_exclusao(livro):
     limpar_frame(frame_conteudo)
 
     label_confirmacao = ctk.CTkLabel(
     master=frame_conteudo,
-    text=f"Tem certeza que deseja excluir o livro:\n{livro[1]}",
+    text=f"Tem certeza que deseja excluir o livro:\n{livro.titulo}",
     font=("times new roman", 24, "bold"),
     wraplength=400,
     justify="center"
@@ -793,7 +791,7 @@ def mostrar_confirmacao_exclusao(livro):
     button_confirmar = ctk.CTkButton(
     master=frame_conteudo,
     text="Confirmar",
-    command=lambda:confirmar_exclusao(livro[0], livro[1])
+    command=lambda:confirmar_exclusao(livro.id, livro.titulo)
     )
 
     button_confirmar.pack(
@@ -961,19 +959,19 @@ def mostrar_formulario_edicao(livro):
         font=("times new roman", 20, "bold")
     )
     titulo_editar.pack(pady=20)
-    entry_titulo = criar_campo(frame_formulario, "Titulo:", livro[1])
-    entry_autor = criar_campo(frame_formulario, "Autor:", livro[2])
-    entry_status = criar_campo_selecao(frame_formulario, "Status:", ["Lido","Lendo","Não Lido"], livro[3])
-    entry_paginas = criar_campo(frame_formulario, "Número de Páginas:", livro[4])
-    entry_data = criar_campo(frame_formulario, "Data Leitura:", livro[5])
-    entry_formato = criar_campo_selecao(frame_formulario,"Formato:",["Físico", "E-book"],livro[6])
-    entry_anotacao = criar_campo_anotacao(frame_formulario, livro[7])
-    entry_capa = criar_campo(frame_formulario, "Insira o Url imagem:", livro[8])
+    entry_titulo = criar_campo(frame_formulario, "Titulo:", livro.titulo)
+    entry_autor = criar_campo(frame_formulario, "Autor:", livro.autor)
+    entry_status = criar_campo_selecao(frame_formulario, "Status:", ["Lido","Lendo","Não Lido"], livro.status)
+    entry_paginas = criar_campo(frame_formulario, "Número de Páginas:", livro.paginas)
+    entry_data = criar_campo(frame_formulario, "Data Leitura:", livro.data)
+    entry_formato = criar_campo_selecao(frame_formulario,"Formato:",["Físico", "E-book"],livro.formato)
+    entry_anotacao = criar_campo_anotacao(frame_formulario, livro.anotacoes)
+    entry_capa = criar_campo(frame_formulario, "Insira o Url imagem:", livro.capa)
 
     botao_salvar = ctk.CTkButton(
     master=frame_formulario,
     text="Salvar",
-    command=lambda: clicar_editar(livro[0], entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa))
+    command=lambda: clicar_editar(livro.id, entry_titulo, entry_autor, entry_status, entry_paginas, entry_data, entry_formato, entry_anotacao, entry_capa))
     botao_salvar.pack(
         pady=(10, 15),
         padx=20,       
@@ -1018,41 +1016,6 @@ def mostrar_mensagem(mensagem):
                 font=("times new roman", 20, "bold")
             )
     label_validacao.pack(pady=20)    
-
-# def validar_paginas(paginas):
-#     if not paginas.strip():
-#         return False, "❌ Insira Páginas do Livro!"
-
-#     if not paginas.isdigit():
-#         return False, "❌ Insira Apenas Número de Páginas!"
-
-#     if int(paginas) <= 0:
-#         return False, "❌ Número de Páginas não pode ser Zero!"
-
-#     return True, ""
-
-# def validar_data(data):
-#     if not data.strip():
-#         return True, ""
-
-#     if not re.fullmatch(r"\d{2}/\d{2}/\d{4}", data):
-#         return False, "❌ Formato inválido! Use DD/MM/AAAA. Exemplo: 13/08/2026."
-
-#     try:
-#         datetime.strptime(data, "%d/%m/%Y")
-#     except ValueError:
-#         return False, "❌ Data inválida! Digite uma data existente."
-
-#     return True, ""
-
-# def validar_ano(ano):
-#     if not ano.strip():
-#         return False, "❌ Insira o ano!"
-#     if not ano.isdigit():
-#         return False, "❌ Insira apenas números no ano!"
-#     if not len(ano) == 4:
-#         return False, "❌ Insira o ano com 4 caracteres!"
-#     return True, ""
 
 def criar_campo(master, texto, valor=None):
     label = ctk.CTkLabel(
